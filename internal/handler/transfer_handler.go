@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"wallet-transfer-service/internal/service"
 
@@ -43,7 +44,7 @@ func (h *TransferHandler) CreateTransfer(
 		c.JSON(
 			http.StatusBadRequest,
 			gin.H{
-				"error": err.Error(),
+				"error": "Missing or invalid fields in request body",
 			},
 		)
 
@@ -96,12 +97,33 @@ func (h *TransferHandler) CreateTransfer(
 
 	if err != nil {
 
-		c.JSON(
-			http.StatusBadRequest,
-			gin.H{
-				"error": err.Error(),
-			},
-		)
+		switch {
+
+		case errors.Is(err, service.ErrInsufficientFunds):
+
+			c.JSON(
+				http.StatusBadRequest,
+				gin.H{
+					"error": "insufficient funds",
+				},
+			)
+
+		case errors.Is(err, service.ErrWalletNotFound):
+			c.JSON(
+				http.StatusNotFound,
+				gin.H{
+					"error": "wallet not found",
+				},
+			)
+
+		default:
+			c.JSON(
+				http.StatusInternalServerError,
+				gin.H{
+					"error": "internal server error",
+				},
+			)
+		}
 
 		return
 	}

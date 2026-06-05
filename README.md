@@ -77,8 +77,8 @@ Request:
 ```json
 {
   "idempotencyKey": "abc123",
-  "fromWalletId": "wallet_1",
-  "toWalletId": "wallet_2",
+  "fromWalletId": "550e8400-e29b-41d4-a716-446655440000",
+  "toWalletId": "550e8400-e29b-41d4-a716-446655440001",
   "amount": 100
 }
 ```
@@ -472,6 +472,5 @@ go run cmd/server/main.go
 * PostgreSQL is the source of truth
 * Idempotency key uniquely identifies a client request
 * Eventual event publication is out of scope
-
 ```
 ```

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -13,10 +14,15 @@ import (
 
 func main() {
 
-	//hardcoded connection string for simplicity, ideally should be from env/config
+	connStr := os.Getenv("DATABASE_URL")
+
+	if connStr == "" {
+		connStr = "postgres://postgres:postgres@localhost:5432/walletdb?sslmode=disable"
+	}
+
 	pool, err :=
 		db.NewPool(
-			"postgres://postgres:postgres@localhost:5432/walletdb",
+			connStr,
 		)
 
 	if err != nil {
